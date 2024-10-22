@@ -3,8 +3,11 @@
 
 
 const mainLink = "https://exquisite-pastelito-9d4dd1.netlify.app/golfapi/courses.json";
-const courses = []
+const coursesPartialLink = "https://exquisite-pastelito-9d4dd1.netlify.app/golfapi/course"; // add "${courseId}.json" to the end
+const courses = await dataFromUrl(mainLink);
 
+
+// put this function into utils or something
 async function dataFromUrl(url) {
     try {
         const response = await fetch(url);
@@ -22,27 +25,27 @@ async function dataFromUrl(url) {
     }
 }
 
-async function setUpCourseData() {
 
-    const data = await dataFromUrl(mainLink);
-
-    for (const key in data) {
-        const url = data[key].url;
-        const courseData = await dataFromUrl(url);
-        courses.push(courseData);
-
-    }
-
-}
-
-await setUpCourseData();
-// code that does the rest of needed things
-console.log(courses);
 
 function createCourseSelect() {
+    let newHtml = "";
+
     for (const course of courses) {
-        const name = `${course.name} (${course.city}, ${course.stateOrProvince})`;
-        const container = document.getElementById("options-container");
-        
+        newHtml += `<option value="${course.id}">${course.name}</option>`;
     }
+
+    document.getElementById("options-container").innerHTML = newHtml;
 }
+createCourseSelect();
+
+async function createTeeSelect() {
+    const selectedCourseId = document.getElementById("options-container").value;
+    const data = await dataFromUrl(coursesPartialLink + `${selectedCourseId}.json`);
+
+    let newHtml = "";
+    console.log(data);
+    newHtml += `
+    
+    `;
+}
+await createTeeSelect();
