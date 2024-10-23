@@ -5,11 +5,12 @@
 const mainLink = "https://exquisite-pastelito-9d4dd1.netlify.app/golfapi/courses.json";
 const coursesPartialLink = "https://exquisite-pastelito-9d4dd1.netlify.app/golfapi/course"; // add "${courseId}.json" to the end
 const courses = await dataFromUrl(mainLink);
+const players = [];
 let currentCourse = null;
 let currentTee = null;
 let currentHole = 0;
 
-
+// also put this class definition somewhere else probably
 class Player {
     constructor(name) {
         this.name = name;
@@ -152,6 +153,70 @@ function createTable() {
 
         tbody.appendChild(row);
     }
+
+    // create one row of inputs for a player
+    const player = new Player("playerName");
+    function test() {
+        // create one row of inputs for a player
+        const playerRow = document.createElement("tr");
+
+        // First cell for the player's name
+        const nameCell = document.createElement("td");
+        nameCell.textContent = player.name;
+        playerRow.appendChild(nameCell);
+
+        // Create input cells for each hole
+        for (let i = 0; i < currentCourse.holes.length; i++) {
+            const scoreCell = document.createElement("td");
+            
+
+            const input = document.createElement("input");
+            input.style.padding = 0;
+            input.style.border = 0;
+            input.style.textAlign = "center";
+            input.style.outline = "none";
+            input.style.width = "100%";
+
+            scoreCell.addEventListener("click", () => {
+                input.focus();
+            });
+
+            input.type = "number";
+            input.id = `${player.name}-score-${i}`;
+            input.min = 0;
+            input.value = 0; // Default value is 0
+
+            // Push the value of the input to the player's score array
+            player.scores.push(0);
+
+            // Update the player's score when the input value changes
+            input.addEventListener("input", (event) => {
+                player.scores[i] = parseInt(event.target.value, 10) || 0; // Update score, or default to 0 if input is empty
+                updatePlayerTotal(player); // Call the function to update the player's total score
+            });
+
+            scoreCell.appendChild(input);
+            playerRow.appendChild(scoreCell);
+        }
+
+        // Last cell for the player's total score
+        const totalCell = document.createElement("td");
+        totalCell.id = `${player.name}-total`;
+        totalCell.textContent = "0"; // Default total is 0
+        playerRow.appendChild(totalCell);
+
+        // Append the player row to the table body
+        tbody.appendChild(playerRow);
+
+        // Function to update player's total score
+        function updatePlayerTotal(player) {
+            const total = player.scores.reduce((acc, score) => Number(acc) + Number(score), 0);
+            document.getElementById(`${player.name}-total`).textContent = total;
+        }
+
+    }
+    test();
+    players.push(player);
 
     table.appendChild(tbody);
     scorecard.appendChild(table); // Append the table to the scorecard
