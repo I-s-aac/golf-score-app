@@ -14,7 +14,19 @@ let currentHole = 0;
 class Player {
     constructor(name) {
         this.name = name;
+        this.id = this.generateUniqueId();
         this.scores = [];
+    }
+
+    // Function to generate a unique ID
+    generateUniqueId() {
+        let id;
+        let isUnique = false;
+        while (!isUnique) {
+            id = Math.floor(Math.random() * 100); // Random ID between 0 and 99
+            isUnique = !players.some(player => player.id === id); // Check for uniqueness
+        }
+        return id;
     }
 }
 
@@ -35,6 +47,7 @@ async function dataFromUrl(url) {
         return null; // or some default data
     }
 }
+
 
 
 
@@ -102,9 +115,10 @@ function createTable() {
 
     // Create the table body
     const tbody = document.createElement("tbody");
+    tbody.id = "score-table-body"
 
     // Create rows for Tee, Yardage, Par, and Handicap
-    const rowTitles = ["Tee", "Yardage", "Par", "Handicap"];
+    const rowTitles = ["Yardage", "Par", "Handicap"];
     for (let i = 0; i < rowTitles.length; i++) {
         const row = document.createElement("tr");
 
@@ -113,34 +127,24 @@ function createTable() {
         titleCell.textContent = rowTitles[i];
         row.appendChild(titleCell);
 
-        function updateTotal() {
-            const total = player.scores.reduce((acc, score) => Number(acc) + Number(score), 0);
-            document.getElementById(`${player.name}-total`).textContent = total;
-        }
         // Add cells for each hole based on the currentCourse and currentTee
         for (let index = 0; index < currentCourse.holes.length; index++) {
             let cell;
 
             switch (i) {
-                case 0: // Tee
-                    cell = document.createElement("td");
-                    cell.textContent = currentTee.slice(0, 1).toUpperCase() + currentTee.slice(1).toLowerCase();
-                    cell.id = `tee-${index}`; // Set ID for the tee cell
-                    break;
-
-                case 1: // Yardage
+                case 0: // Yardage
                     cell = document.createElement("td");
                     cell.textContent = currentCourse.holes[index].teeBoxes.find(tee => tee.teeType === currentTee).yards; // Get yardage based on current tee
                     cell.id = `yardage-${index}`; // Set ID for the yardage cell
                     break;
 
-                case 2: // Par
+                case 1: // Par
                     cell = document.createElement("td");
                     cell.textContent = currentCourse.holes[index].teeBoxes.find(tee => tee.teeType === currentTee).par; // Get par based on current tee
                     cell.id = `par-${index}`; // Set ID for the par cell
                     break;
 
-                case 3: // Handicap
+                case 2: // Handicap
                     cell = document.createElement("td");
                     cell.textContent = currentCourse.holes[index].teeBoxes.find(tee => tee.teeType === currentTee).hcp; // Get handicap based on current tee
                     cell.id = `hcp-${index}`; // Set ID for the handicap cell
@@ -162,8 +166,6 @@ function createTable() {
         for (let j = 0; j < cells.length; j++) {
             const num = parseInt(cells[j].textContent);
 
-            console.log(total, parseInt(cells[j].textContent))
-
             if (typeof num === "number" && num) {
                 total += num;
             }
@@ -176,15 +178,42 @@ function createTable() {
         tbody.appendChild(row);
     }
 
-    // create one row of inputs for a player
-    const player = new Player("playerName");
-    function test() {
+
+    table.appendChild(tbody);
+    scorecard.appendChild(table); // Append the table to the scorecard
+}
+
+
+
+function addAPlayer() {
+    // IMPORTANT
+    /* this needs to be rewritten to automatically add these rows based on the number of players that exist in the createTable function
+        the addition here should be a lot easier
+
+        create a player
+        append player to players list
+        call createTable()
+    */
+    if (players.length < 4) {
         // create one row of inputs for a player
+        const player = new Player("Click to name player");
         const playerRow = document.createElement("tr");
 
         // First cell for the player's name
         const nameCell = document.createElement("td");
-        nameCell.textContent = player.name;
+        const input = document.createElement("input");
+
+        nameCell.addEventListener("click", () => { input.focus(); input.select(); });
+
+        input.type = "text";
+        input.value = player.name;
+        input.style.textAlign = "center";
+        input.style.border = 0;
+        input.style.outline = "none";
+        input.style.width = "min-content";
+        input.addEventListener("input", () => player.name = input.value);
+
+        nameCell.appendChild(input);
         playerRow.appendChild(nameCell);
 
         // Create input cells for each hole
@@ -199,16 +228,13 @@ function createTable() {
             input.style.outline = "none";
             input.style.width = "100%";
 
-            scoreCell.addEventListener("click", () => {
-                input.focus();
-            });
+            scoreCell.addEventListener("click", () => input.focus());
 
             input.type = "number";
             input.id = `${player.name}-score-${i}`;
             input.min = 0;
-            input.value = 0; // Default value is 0
 
-            // Push the value of the input to the player's score array
+            // push default values (0)
             player.scores.push(0);
 
             // Update the player's score when the input value changes
@@ -227,8 +253,9 @@ function createTable() {
         totalCell.textContent = "0"; // Default total is 0
         playerRow.appendChild(totalCell);
 
+        players.push(player);
         // Append the player row to the table body
-        tbody.appendChild(playerRow);
+        document.getElementById("score-table-body").appendChild(playerRow);
 
         // Function to update player's total score
         function updatePlayerTotal(player) {
@@ -237,18 +264,6 @@ function createTable() {
         }
 
     }
-    test();
-    players.push(player);
-
-    table.appendChild(tbody);
-    scorecard.appendChild(table); // Append the table to the scorecard
-}
-
-
-
-
-function updateTable() {
-    // update some part of the table using currentHole
 }
 
 async function updateEverything() {
@@ -266,12 +281,15 @@ async function checkForCourseChange() {
     createTable();
 }
 
-async function checkForTeeChange() {
-    createTable(); // maybe make a new function to only change the data within the table at whatever the current hole
+function checkForTeeChange() {
+    currentTee = document.getElementById("tee-container").value;
+    createTable();
 }
 
-document.getElementById("options-container").addEventListener("change", checkForCourseChange)
+document.getElementById("player-add-button").addEventListener("click", addAPlayer);
+document.getElementById("options-container").addEventListener("change", checkForCourseChange);
+document.getElementById("tee-container").addEventListener("change", checkForTeeChange);
 
 
 // create stuff on the page initially
-updateEverything();
+await updateEverything();
