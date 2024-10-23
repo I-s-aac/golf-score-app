@@ -89,6 +89,7 @@ function createTable() {
         const th = document.createElement("th");
         th.textContent = i; // Hole number
         headerRow.appendChild(th);
+
     }
 
     // Last cell for the Total column
@@ -111,6 +112,11 @@ function createTable() {
         const titleCell = document.createElement("td");
         titleCell.textContent = rowTitles[i];
         row.appendChild(titleCell);
+
+        function updateTotal() {
+            const total = player.scores.reduce((acc, score) => Number(acc) + Number(score), 0);
+            document.getElementById(`${player.name}-total`).textContent = total;
+        }
         // Add cells for each hole based on the currentCourse and currentTee
         for (let index = 0; index < currentCourse.holes.length; index++) {
             let cell;
@@ -149,6 +155,22 @@ function createTable() {
 
         // Last cell for the Total column (leave it empty for now)
         const totalCell = document.createElement("td");
+        totalCell.id = `total-${i}`
+        const cells = row.querySelectorAll("td");
+
+        let total = 0;
+        for (let j = 0; j < cells.length; j++) {
+            const num = parseInt(cells[j].textContent);
+
+            console.log(total, parseInt(cells[j].textContent))
+
+            if (typeof num === "number" && num) {
+                total += num;
+            }
+        }
+        totalCell.textContent = total !== 0 ? total : "";
+
+
         row.appendChild(totalCell);
 
         tbody.appendChild(row);
@@ -168,7 +190,7 @@ function createTable() {
         // Create input cells for each hole
         for (let i = 0; i < currentCourse.holes.length; i++) {
             const scoreCell = document.createElement("td");
-            
+
 
             const input = document.createElement("input");
             input.style.padding = 0;
