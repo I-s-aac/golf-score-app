@@ -135,6 +135,9 @@ function createTable() {
     for (let i = 0; i < rowTitles.length; i++) {
         const row = document.createElement("tr");
 
+        if (rowTitles[i] === "Handicap") {
+            row.style.borderBottom = "1px solid black";
+        }
         // Row label
         const titleCell = document.createElement("td");
         titleCell.textContent = rowTitles[i];
@@ -143,6 +146,7 @@ function createTable() {
         // Add cells for each hole
         let frontNineTotal = 0;
         let backNineTotal = 0;
+
         for (let index = 0; index < currentCourse.holes.length; index++) {
             let cell = document.createElement("td");
 
@@ -201,8 +205,6 @@ function createTable() {
     // Append the player rows like before, including "Out", "In", and "Total" score columns
     for (let i = 0; i < players.length; i++) {
         const playerRow = document.createElement("tr");
-
-        playerRow.style.borderTop = "2px solid black";
 
         const nameCell = document.createElement("td");
         const input = document.createElement("input");
