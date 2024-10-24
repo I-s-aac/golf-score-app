@@ -79,7 +79,7 @@ async function createTeeSelect() {
     document.getElementById("tee-container").innerHTML = newHtml;
     currentTee = document.getElementById("tee-container").value;
 }
-
+window.eee = () => console.log(players);
 function createTable() {
 
     for (let i = 0; i < players.length; i++) {
