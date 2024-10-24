@@ -1,15 +1,44 @@
-td, tr, th {
+td,
+tr,
+th {
     text-align: center;
 }
 
 /* For Chrome, Safari, and newer versions of Edge */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none; /* Hides the spinner buttons */
-    margin: 0; /* Remove default margin */
+    -webkit-appearance: none;
+    /* Hides the spinner buttons */
+    margin: 0;
+    /* Remove default margin */
 }
 
 /* For Firefox */
 input[type="number"] {
-    -moz-appearance: textfield; /* Hides the spinner buttons */
+    -moz-appearance: textfield;
+    /* Hides the spinner buttons */
+}
+
+table {
+    thead {
+        // Apply alternating colors to header cells
+        th:nth-child(even) {
+            background-color: #f2f2f2; // Light gray or your choice
+        }
+
+        th:nth-child(odd) {
+            background-color: #ffffff; // White or your choice
+        }
+    }
+
+    tbody {
+        // Apply alternating colors to body cells
+        td:nth-child(even) {
+            background-color: #f2f2f2; // Light gray or your choice
+        }
+
+        td:nth-child(odd) {
+            background-color: #ffffff; // White or your choice
+        }
+    }
 }

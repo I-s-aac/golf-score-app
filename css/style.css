@@ -1,15 +1,33 @@
-td, tr, th {
+td,
+tr,
+th {
   text-align: center;
 }
 
 /* For Chrome, Safari, and newer versions of Edge */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
-  -webkit-appearance: none; /* Hides the spinner buttons */
-  margin: 0; /* Remove default margin */
+  -webkit-appearance: none;
+  /* Hides the spinner buttons */
+  margin: 0;
+  /* Remove default margin */
 }
 
 /* For Firefox */
 input[type=number] {
-  -moz-appearance: textfield; /* Hides the spinner buttons */
+  -moz-appearance: textfield;
+  /* Hides the spinner buttons */
+}
+
+table thead th:nth-child(even) {
+  background-color: #f2f2f2;
+}
+table thead th:nth-child(odd) {
+  background-color: #ffffff;
+}
+table tbody td:nth-child(even) {
+  background-color: #f2f2f2;
+}
+table tbody td:nth-child(odd) {
+  background-color: #ffffff;
 }/*# sourceMappingURL=style.css.map */
